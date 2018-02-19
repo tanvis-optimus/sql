@@ -1,9 +1,13 @@
 use db1_sqlbasic;
 
+
+
+--#############      CASE STATEMENT         ####################################################--
+
+
 SELECT fname,lname,age ,salary ,"Verdict" = 
 CASE 
-       WHEN salary >= 50000 THEN 'Yes'
-	   WHEN age < 35  THEN 'Yes' 
+       WHEN salary >= 50000 and age < 35 THEN 'Yes'	   	  
 	   ELSE 'No' 
 END
 FROM employee
@@ -12,11 +16,11 @@ FROM employee
 UPDATE employee
 SET age = 
 ( CASE 
-      WHEN salary > = 50000 THEN age +1 
-	  ELSE age-2
+      WHEN salary > = 50000 THEN age -1 
+	  ELSE age+2
 END)
 
---#############################################################################################--
+--#############      PROCEDURE  AND EXCEPTION HANDLING       ###########################################--
 
 CREATE TABLE product
 ( 
@@ -114,6 +118,8 @@ update employee set projects = 5 where designation = 'Manager';
 SELECT ISNULL(SUM(employee.projects), 0) FROM employee
 
 
+--#######################    FUNCTION          ######################################--
+
 CREATE FUNCTION fn_leapyear(@year int)
 RETURNS varchar(50)
 AS
@@ -127,6 +133,9 @@ END
 SELECT dbo.fn_leapyear(2001) AS type_of_year
 
 
+
+--#######################    PROCEDURE          ######################################--
+
 CREATE PROCEDURE sp_empinfo
 @emloyee_id int
 AS 
@@ -138,6 +147,8 @@ END
 sp_empinfo 1
 
 
+--#######################    PIVOT          ######################################--
+
 SELECT fname ,TechLead,Intern,Trainee,Manager 
 FROM employee 
 PIVOT
@@ -147,6 +158,7 @@ PIVOT
   IN(TechLead,Intern,Trainee,Manager  ) 
 )AS pivot_table
 
+--#######################    CURSOR          ######################################--
 
 ALTER TABLE employee ADD PF_2 int;
 
@@ -171,10 +183,9 @@ DEALLOCATE cursor_updateemployee
 
 select * from employee;
 
+--#######################    TRIGGER          ######################################--
 
 ALTER TABLE employee ADD gross int;
-
-
 
 CREATE TRIGGER tr_EMployee_Insert
 ON employee
@@ -192,3 +203,32 @@ END
 insert into employee 
   (fname,lname,gender,active,designation,salary,dept_id,date_of_joining,designation_id,pf,projects,pf_2) 
   values ('Mark','Mars','M',1,'TechLead',77000,119,'2000-07-29',3773,9432.5,3,18865)
+
+
+
+
+  --#######################    SUBQUERIES          ######################################--
+
+
+  SELECT TOP 3 fname , salary FROM employee
+      WHERE	salary IN(SELECT DISTINCT salary from employee)ORDER BY salary DESC ; 
+
+
+
+SELECT e.fname , e.lname , d.dept_name 
+FROM employee e LEFT JOIN department d ON e.dept_id = d.dept_id
+where e.dept_id IS  NULL;
+
+
+
+SELECT fname,lname, dept_id from employee
+where dept_id IN (SELECT DISTINCT dept_id from department)
+
+Select dept_id, dept_name, location
+from department   where dept_id  not in  (Select distinct dept_id from employee where dept_id is not null )
+
+
+Select dept_id,dept_name,
+(Select COUNT(eid) from employee where dept_id = department.dept_id  ) as Totalemployess
+from department
+order by dept_name 

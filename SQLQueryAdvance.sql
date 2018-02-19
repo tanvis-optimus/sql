@@ -7,13 +7,18 @@ insert into employee (fname,lname,gender,active,designation,salary)
 insert into employee (fname,lname,gender,active,designation,salary) 
             values ('Akash','Goel','M',1,'Intern',20000);
 
+
+--#######################    TOP SALARIES         ######################################--
+
+--FIRST HIGHEST
 select top 3 salary from employee order by salary desc;
-
+--SECIND HIGHEST
 select MAX(salary) from employee where salary < ( select MAX(salary) from employee ) ;
-
+--THIRD HIGHEST
 SELECT TOP 1 salary 
        FROM (select top 3 salary from employee order by salary desc) 
 	   AS SAL ORDER BY salary ASC;
+--#######################    LIKE,DISTINCT,IN,BETWEEN      ######################################--
 
 SELECT * FROM employee WHERE fname LIKE 'A%' ; 
 SELECT * FROM employee WHERE salary IN (15000,30000,45000) ;
@@ -47,7 +52,7 @@ update employee set dept_id = '556' where designation = 'Manager' ;
 update employee set dept_id = null where designation = 'Manager' ;
 
 --**************************************************************************--
-
+--#######################    JOINS          ######################################--
 SELECT e.fname , e.lname , d.dept_name 
 FROM employee e LEFT JOIN department d ON e.dept_id = d.dept_id;
 
@@ -92,7 +97,7 @@ INSERT INTO LMN VALUES('Sneh','China');
 INSERT INTO ABC VALUES('Tina','Europe');
 
 --**************************************************************************--
-
+--#######################  UNION AND JOINS        ######################################--
 SELECT emp_name FROM ABC
 UNION ALL
 SELECT emp_name FROM XYZ
@@ -109,9 +114,11 @@ SELECT d.dept_name, COUNT(e.fname) AS NumberOfEmployees FROM department d
 LEFT JOIN employee e ON e.dept_id = d.dept_id
 GROUP BY d.dept_name  HAVING COUNT(e.fname) >3;
 
+--#######################    COPYING A TABLE         ######################################--
+
 Select * into backupdb.dbo.EmployeeBackup from db1_sqlbasic.dbo.employee ;
 
-
+--#######################   CONSTRAINTS        ######################################--
 ALTER TABLE department ALTER COLUMN dept_id  INTEGER NOT NULL;
 
 ALTER TABLE department
@@ -131,6 +138,8 @@ CREATE TABLE cnst_table (
 
 CREATE UNIQUE INDEX u_index
 ON employee (fname, lname);
+
+--#######################    VIEWS         ######################################--
 
 CREATE VIEW view1 AS
 SELECT fname, salary
@@ -195,6 +204,7 @@ SELECT FORMAT (GETDATE(), 'ddd  dd MMM yy , hh:mm tt');
 
 ALTER TABLE employee ADD pf DECIMAL(10,2) ;
 update employee set pf = (salary*0.1275 );
+
 
 
 

@@ -200,11 +200,61 @@ ALTER TABLE employee
 ADD CONSTRAINT FK_employee
 FOREIGN KEY (designation_id) REFERENCES designation(des_id);
 
+--#######################   date     ######################################--
+
 SELECT FORMAT (GETDATE(), 'ddd  dd MMM yy , hh:mm tt');
 
+
+
+
+
+
+--#######################   operators     ######################################--
 ALTER TABLE employee ADD pf DECIMAL(10,2) ;
 update employee set pf = (salary*0.1275 );
 
 
 
 
+
+
+
+
+
+
+SELECT TRAIN_ID,STATION_ID,DISTANCE,        
+	   CONVERT(VARCHAR(10), SCHEDULED_ARRIVAL, 103) AS SCHEDULED_ARRIVAL,
+	   CONVERT(VARCHAR(10), DEPARTURE, 103) AS DEPARTURE
+ FROM JOURNEY_DETAILS
+
+
+
+
+
+
+
+
+
+
+ with r  ( t_name ,s_name)
+ as
+ (
+  select train_details.train_name,station_details.station_name from journey_details join
+ station_details on station_details.station_id=journey_details.station_id  join train_details on train_details.train_Id=journey_details.train_id where convert(int,shedule_arrival)!=0 and convert(int,departed)!=0
+ ),
+
+ s(t_name,s_name)
+ as
+ (
+ select train_details.train_name,station_details.station_name from journey_details join
+ station_details on station_details.station_id=journey_details.station_id  join train_details on train_details.train_id=journey_details.train_id where journey_details.distance=0
+ ),
+ 
+ e(t_name,s_name)
+ as
+ ( 
+ select train_details.train_name,station_details.station_name from journey_details join
+ station_details on station_details.station_id=journey_details.station_id  join train_details on train_details.train_Id=journey_details.train_id where  convert(varchar,departed) is null
+)
+select  t_name as train_name, s_name as station_name  from s starting inner join r route on starting.t_name=route.t_name inner join e ending on  starting.t_name=ending.t_name 
+  
